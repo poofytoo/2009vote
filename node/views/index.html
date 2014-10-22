@@ -134,7 +134,7 @@
             userVote[products[i]] = k;
           }
           data = {}
-          data[kerb + '_' + FORM_ID] = userVote;
+          data[kerb.toLowerCase() + '_' + FORM_ID] = userVote;
           ref.child('results').update(data);
         } else {
           $('.message')
