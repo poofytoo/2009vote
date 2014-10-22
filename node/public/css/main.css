@@ -16,14 +16,49 @@ body {
 }
 
 h1 {
-  font-size: 20px;
-  margin-bottom: 10px;
+  font-size: 40px;
+  margin-bottom: 30px;
 }
 
 th {
   text-align: center;
   font-weight: bold;
   padding: 10px;
+}
+
+.instructions {
+  margin: 10px 0;
+  padding: 10px;
+  background-color: #fff2b8;
+  border: 1px solid #edae35;
+}
+
+.kerberos {
+  margin: 10px 0;
+}
+
+.kerberos input {
+  width: 200px !important;
+  text-align: left !important;
+}
+
+.note {
+  font-size: 12px;
+  color: #999;
+}
+
+table {
+  margin: 20px 0;
+}
+p {
+  line-height: normal;
+}
+input[type="text"] {
+  border: 1px solid #666;
+  padding: 5px 10px;
+  font-size: 14px;
+  width: 50px;
+  text-align: center;
 }
 
 em {

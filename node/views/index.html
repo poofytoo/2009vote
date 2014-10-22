@@ -8,6 +8,16 @@
   </head>
   <body>
     <h1>2.009 Pink Rating Form</h1>
+    <div class='instructions'>Please type one of: <em>1, 0, </em>or<em> -1</em> for each cell</div>
+    
+    <p>
+    <em>Complexity</em> (How much of the team can work on it: 1 = more people involved than standard, -1 = fewer people involved)<br />
+    <em>Potential Impact</em> (1 = larger potential impact on user than standard, -1 = less potential impact on user than standard)<br />
+    <em>Originality</em> (1 = more original than standard, -1 = less original than standard)<br />
+    <em>Scope</em> (1 = will definitely finish in time, -1 = we may hate ourselves in December)<br />
+    <em>Personal Hype</em> (1 = more hype than standard, -1 = less hype than standard)
+    </p>
+
     <table>
       <tr>
         <th>Product</th>
@@ -50,7 +60,10 @@
         <td><input type="text" id="pt_h" /></td>
       </tr>
     </table>
-    <input type="text" id="kerb" placeholder="kerberos without @mit.edu"/>
+    <div class="kerberos">
+      Your Kerberos: <input type="text" id="kerb" placeholder="kerberos without @mit.edu"/><br />
+      <span class="note">votes will be displayed as anonymous</span>
+    </div>
     <button id="submit">Submit</button> 
     <span class="message"></span>
 
@@ -91,7 +104,7 @@
           }
 
           if ($(this).attr('id') == 'kerb') {
-            if ($(this).val == '') {
+            if ($(this).val() == '') {
               $(this).css('border', '1px solid red');
               OK = false;
             } else {
@@ -105,7 +118,7 @@
           $('.message')
             .show()
             .text('submitted!')
-            .fadeOut(1000);
+            .fadeOut(10000);
 
           var products = ['coolkeep','icecheck','proxband','pt'];
           var attributes = ['c', 'p', 'o', 's', 'h'];
