@@ -71,3 +71,7 @@ td {
   padding: 10px;
   border-top: 1px solid #666;
 }
+
+tr.cell-row th:nth-child(3n+1), tr.cell-row td:nth-child(3n + 1) {
+  border-right: 1px solid black;
+}
