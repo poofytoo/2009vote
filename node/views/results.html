@@ -258,14 +258,14 @@
                 cell.css('background', green + greenOpacity + ')');
                 if (attribute === 'total') {
                   greenOpacity = (product.result) / positiveSum;
-                  cell.css('box-shadow', '0 0 0 3px ' + green + greenOpacity + ') inset');
+                  cell.css('box-shadow', '0 0 0 2px #fff inset');
                 }
               } else {
                 var redOpacity = 0.5 * (product.result) / negativeSum;
                 cell.css('background', red + redOpacity + ')');
                 if (attribute == 'total') {
                   redOpacity = (product.result) / negativeSum;
-                  cell.css('box-shadow', '0 0 0 3px ' + red + redOpacity + ') inset');
+                  cell.css('box-shadow', '0 0 0 2px #fff inset');
                 }
               }
             }
