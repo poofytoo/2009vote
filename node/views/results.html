@@ -29,7 +29,7 @@
         <td id="coolkeep_o"></td>
         <td id="coolkeep_s"></td>
         <td id="coolkeep_h"></td>
-        <td id="coolkeep_t"></td>
+        <td class='total' id="coolkeep_t"></td>
       </tr>
       <tr id='icecheck'>
         <td>IceCheck</td>
@@ -38,7 +38,7 @@
         <td id="icecheck_o"></td>
         <td id="icecheck_s"></td>
         <td id="icecheck_h"></td>
-        <td id="icecheck_t"></td>
+        <td class='total' id="icecheck_t"></td>
       </tr>
       <tr id='proxband'>
         <td>ProxBand</td>
@@ -47,7 +47,7 @@
         <td id="proxband_o"></td>
         <td id="proxband_s"></td>
         <td id="proxband_h"></td>
-        <td id="proxband_t"></td>
+        <td class='total' id="proxband_t"></td>
       </tr>
       <tr id='pt'>
         <td>PT</td>
@@ -56,7 +56,7 @@
         <td id="pt_o" /></td>
         <td id="pt_s" /></td>
         <td id="pt_h" /></td>
-        <td id="pt_t"></td>
+        <td class='total' id="pt_t"></td>
       </tr>
     </tbody>
     </table>
@@ -95,7 +95,7 @@
         }
         // Displaying Results
         var products = ['coolkeep','icecheck','proxband','pt'];
-        var results = {c: [], p: [], o: [], s: [], h: []};
+        var results = {c: [], p: [], o: [], s: [], h: [], total: []};
         var attributes = ['c', 'p', 'o', 's', 'h'];
         for (i in products) {
           var productName = products[i];
@@ -107,17 +107,11 @@
             total += fVal;
             $('#' + productName + '_' + attributeName).text(fVal)
           }
-          $('#' + productName + '_t').html("<em>" + total.toFixed(1) + "</em>")
+          $('#' + productName + '_t').html("<em>" + total.toFixed(1) + "</em>");
+          results.total.push(total);
         }
-        var productResults = _.map(products, function(product, index) {
-          return {
-            product: product,
-            result: results[index]
-          }
-        });
-        productResults = _.sortBy(productResults, function(product) {
-          return product.result;
-        });
+        // For indexing
+        attributes.push('total');
 
         var green = 'rgba(34, 144, 14, ';
         var red = 'rgba(196, 0, 0, ';
@@ -143,12 +137,21 @@
           column = _.sortBy(column, function(value) { return value.result; });
           _.each(column, function(product, index) {
             if (product.product !== 'icecheck') {
+              var cell = $('#' + product.product + ' td:nth-child(' + idx + ')');
               if (product.result >= 0) {
                 var greenOpacity = 0.5 * (product.result) / positiveSum;
-                $('#' + product.product + ' td:nth-child(' + idx + ')').css('background', green + greenOpacity + ')');
+                cell.css('background', green + greenOpacity + ')');
+                if (attribute === 'total') {
+                  greenOpacity = (product.result) / positiveSum;
+                  cell.css('box-shadow', '0 0 0 3px ' + green + greenOpacity + ') inset');
+                }
               } else {
                 var redOpacity = 0.5 * (product.result) / negativeSum;
-                $('#' + product.product + ' td:nth-child(' + idx + ')').css('background', red + redOpacity + ')');
+                cell.css('background', red + redOpacity + ')');
+                if (attribute == 'total') {
+                  redOpacity = (product.result) / negativeSum;
+                  cell.css('box-shadow', '0 0 0 3px ' + red + redOpacity + ') inset');
+                }
               }
             }
           });
