@@ -1,0 +1,111 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>Sample Node App</title>
+    <link rel="stylesheet" type="text/css" href="/css/reset.css">
+    <link rel="stylesheet" type="text/css" href="/css/main.css">
+    <script src="https://cdn.firebase.com/js/client/1.1.2/firebase.js"></script>
+  </head>
+  <body>
+    <h1>2.009 Pink Rating Form</h1>
+    <table>
+      <tr>
+        <th>Product</th>
+        <th>Complexity</th>
+        <th>Pot. Impact</th>
+        <th>Originality</th>
+        <th>Scope</th>
+        <th>Hype</th>
+        <th>TOTAL</th>
+      </tr>
+      <tr>
+        <td>CoolKeep</td>
+        <td id="coolkeep_c"></td>
+        <td id="coolkeep_p"></td>
+        <td id="coolkeep_o"></td>
+        <td id="coolkeep_s"></td>
+        <td id="coolkeep_h"></td>
+        <td id="coolkeep_t"></td>
+      </tr>
+      <tr>
+        <td>IceCheck</td>
+        <td id="icecheck_c"></td>
+        <td id="icecheck_p"></td>
+        <td id="icecheck_o"></td>
+        <td id="icecheck_s"></td>
+        <td id="icecheck_h"></td>
+        <td id="icecheck_t"></td>
+      </tr>
+      <tr>
+        <td>ProxBand</td>
+        <td id="proxband_c"></td>
+        <td id="proxband_p"></td>
+        <td id="proxband_o"></td>
+        <td id="proxband_s"></td>
+        <td id="proxband_h"></td>
+        <td id="proxband_t"></td>
+      </tr>
+      <tr>
+        <td>PT</td>
+        <td id="pt_c"/></td>
+        <td id="pt_p" /></td>
+        <td id="pt_o" /></td>
+        <td id="pt_s" /></td>
+        <td id="pt_h" /></td>
+        <td id="pt_t"></td>
+      </tr>
+    </table>
+    <h2></h2>
+    <script src='/js/jquery.min.js' type='text/javascript'></script>
+    <script src='/js/main.js' type='text/javascript'></script>
+    <script>
+    $(function() {
+      var ref = new Firebase('https://poofytoo.firebaseio.com/pughvote');
+      var FORM_ID = 1;
+
+      f = {};
+      f.coolkeep = {};
+      f.icecheck = {};
+      f.proxband = {};
+      f.pt = {};
+
+      var numUsers = 0;
+      ref.once('value', function(s) {
+        // Tabulating Results
+        var data = s.val().results;
+        for (user in data) {
+          if (user !== 'temp') {
+            numUsers ++;
+            userVote = data[user];
+            for (productName in userVote) {
+              for (productAttr in userVote[productName]) {
+                if (f[productName][productAttr]) {
+                  f[productName][productAttr] += parseFloat(userVote[productName][productAttr]);
+                } else {
+                  f[productName][productAttr] = parseFloat(userVote[productName][productAttr]);
+                }
+              }
+            }
+          }
+        }
+        // Displaying Results
+        var products = ['coolkeep','icecheck','proxband','pt'];
+        var attributes = ['c', 'p', 'o', 's', 'h'];
+        for (i in products) {
+          var productName = products[i];
+          var total = 0;
+          for (j in attributes) {
+            var attributeName = attributes[j];
+            var fVal = Math.round(f[productName][attributeName]/numUsers * 10) / 10
+            total += fVal;
+            $('#' + productName + '_' + attributeName).text(fVal)
+          }
+          $('#' + productName + '_t').html("<em>" + total.toFixed(1) + "</em>")
+        }
+        $('h2').text('Participation: ' + numUsers)
+      })
+    })
+    </script>
+    <!-- Load any other client side scripts here. Add them in the /public/js/ folder -->
+  </body>
+</html>
