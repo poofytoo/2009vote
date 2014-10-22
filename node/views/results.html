@@ -5,10 +5,12 @@
     <link rel="stylesheet" type="text/css" href="/css/reset.css">
     <link rel="stylesheet" type="text/css" href="/css/main.css">
     <script src="https://cdn.firebase.com/js/client/1.1.2/firebase.js"></script>
+    <script src="http://underscorejs.org/underscore-min.js"></script>
   </head>
   <body>
     <h1>2.009 Pink Rating Form RESULTS</h1>
     <table>
+      <thead>
       <tr>
         <th>Product</th>
         <th>Complexity</th>
@@ -18,7 +20,9 @@
         <th>Hype</th>
         <th>TOTAL</th>
       </tr>
-      <tr>
+    </thead>
+    <tbody>
+      <tr id='coolkeep'>
         <td>CoolKeep</td>
         <td id="coolkeep_c"></td>
         <td id="coolkeep_p"></td>
@@ -27,7 +31,7 @@
         <td id="coolkeep_h"></td>
         <td id="coolkeep_t"></td>
       </tr>
-      <tr>
+      <tr id='icecheck'>
         <td>IceCheck</td>
         <td id="icecheck_c"></td>
         <td id="icecheck_p"></td>
@@ -36,7 +40,7 @@
         <td id="icecheck_h"></td>
         <td id="icecheck_t"></td>
       </tr>
-      <tr>
+      <tr id='proxband'>
         <td>ProxBand</td>
         <td id="proxband_c"></td>
         <td id="proxband_p"></td>
@@ -45,7 +49,7 @@
         <td id="proxband_h"></td>
         <td id="proxband_t"></td>
       </tr>
-      <tr>
+      <tr id='pt'>
         <td>PT</td>
         <td id="pt_c"/></td>
         <td id="pt_p" /></td>
@@ -54,6 +58,7 @@
         <td id="pt_h" /></td>
         <td id="pt_t"></td>
       </tr>
+    </tbody>
     </table>
     <h2></h2>
     <script src='/js/jquery.min.js' type='text/javascript'></script>
@@ -90,18 +95,64 @@
         }
         // Displaying Results
         var products = ['coolkeep','icecheck','proxband','pt'];
+        var results = {c: [], p: [], o: [], s: [], h: []};
         var attributes = ['c', 'p', 'o', 's', 'h'];
         for (i in products) {
           var productName = products[i];
           var total = 0;
           for (j in attributes) {
             var attributeName = attributes[j];
-            var fVal = Math.round(f[productName][attributeName]/numUsers * 10) / 10
+            var fVal = Math.round(f[productName][attributeName]/numUsers * 10) / 10;
+            results[attributeName].push(fVal);
             total += fVal;
             $('#' + productName + '_' + attributeName).text(fVal)
           }
           $('#' + productName + '_t').html("<em>" + total.toFixed(1) + "</em>")
         }
+        var productResults = _.map(products, function(product, index) {
+          return {
+            product: product,
+            result: results[index]
+          }
+        });
+        productResults = _.sortBy(productResults, function(product) {
+          return product.result;
+        });
+
+        var green = 'rgba(34, 144, 14, ';
+        var red = 'rgba(196, 0, 0, ';
+        var opacity = 0.5;
+        _.each(results, function(values, attribute) {
+          var idx = _.indexOf(attributes, attribute) + 2;
+          var positives = _.filter(values, function(val) { return val >= 0; });
+          var positiveSum = 0;
+          if (positives.length > 0) {
+            positiveSum = _.reduce(positives, function(memo, num) { return memo + num; });
+          }
+          var negatives = _.filter(values, function(val) { return val < 0; });
+          var negativeSum = 0;
+          if (negatives.length > 0) {
+            negativeSum = _.reduce(negatives, function(memo, num) { return memo + num; });
+          }
+          var column = _.map(values, function(value, index) {
+            return {
+              product: products[index],
+              result: value
+            }
+          });
+          column = _.sortBy(column, function(value) { return value.result; });
+          _.each(column, function(product, index) {
+            if (product.product !== 'icecheck') {
+              if (product.result >= 0) {
+                var greenOpacity = 0.5 * (product.result) / positiveSum;
+                $('#' + product.product + ' td:nth-child(' + idx + ')').css('background', green + greenOpacity + ')');
+              } else {
+                var redOpacity = 0.5 * (product.result) / negativeSum;
+                $('#' + product.product + ' td:nth-child(' + idx + ')').css('background', red + redOpacity + ')');
+              }
+            }
+          });
+        });
         $('h2').text('Participation: ' + numUsers)
       })
     })
